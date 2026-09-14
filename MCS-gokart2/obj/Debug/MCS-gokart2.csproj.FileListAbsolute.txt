@@ -5,3 +5,10 @@ C:\Users\meszaroscsaba\source\repos\MCS-gokart2\MCS-gokart2\obj\Debug\MCS-gokart
 C:\Users\meszaroscsaba\source\repos\MCS-gokart2\MCS-gokart2\obj\Debug\MCS-gokart2.csproj.CoreCompileInputs.cache
 C:\Users\meszaroscsaba\source\repos\MCS-gokart2\MCS-gokart2\obj\Debug\MCS-gokart2.exe
 C:\Users\meszaroscsaba\source\repos\MCS-gokart2\MCS-gokart2\obj\Debug\MCS-gokart2.pdb
+C:\Users\meszaroscsaba\Documents\Github2\MCS-gokart\MCS-gokart2\bin\Debug\MCS-gokart2.exe.config
+C:\Users\meszaroscsaba\Documents\Github2\MCS-gokart\MCS-gokart2\bin\Debug\MCS-gokart2.exe
+C:\Users\meszaroscsaba\Documents\Github2\MCS-gokart\MCS-gokart2\bin\Debug\MCS-gokart2.pdb
+C:\Users\meszaroscsaba\Documents\Github2\MCS-gokart\MCS-gokart2\obj\Debug\MCS-gokart2.csproj.AssemblyReference.cache
+C:\Users\meszaroscsaba\Documents\Github2\MCS-gokart\MCS-gokart2\obj\Debug\MCS-gokart2.csproj.CoreCompileInputs.cache
+C:\Users\meszaroscsaba\Documents\Github2\MCS-gokart\MCS-gokart2\obj\Debug\MCS-gokart2.exe
+C:\Users\meszaroscsaba\Documents\Github2\MCS-gokart\MCS-gokart2\obj\Debug\MCS-gokart2.pdb

@@ -134,6 +134,48 @@ namespace MCS_gokart2
 
             }
 
+            public static class NevGenerator
+            {
+                public static List<string> NevekBeolvasasa(string fajlNev)
+                { 
+                    List<string> nevek = new List<string>();
+                    string teljesUtvonal = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,fajlNev);
+
+                    if (!File.Exists(teljesUtvonal))
+                    {
+                        Console.WriteLine($"HIBA: A(z) '{fajlNev}' fájl nem található itt: {teljesUtvonal}");
+                        Environment.Exit(1);
+
+                    }
+
+                    string[] sorok = File.ReadAllLines(teljesUtvonal);
+                    foreach (string in sorok)
+                    {
+                        string tisztitottSor = sor.Trim();
+                        if (!string.IsNullOrWhiteSpace(tisztitottSor))
+                        {
+                            nevek.Add(tisztitottSor);
+                        }
+                    }
+                    return nevek;
+                }
+
+
+                public static Versenyzo VeletlenVersenyzoGeneralasa(List<string> vezeteknevek, List<string> keresztnevek, Random rnd)
+                { 
+                    string vezeteknev = vezeteknevek[rnd.Next(vezeteknevek.Count)];
+                    string keresztnev = keresztnevek[rnd.Next(keresztnevek.Count)];
+
+                    DateTime mindDatum = new DateTime(1950, 1, 1);
+                    DateTime maxDatum = DateTime.Today.AddYears(-1);
+                    int napTartomany = (maxDatum - minDatum).Days;
+                    DateTime szuletesiIdo = minDatum.AddDays(rnd.Next(napTartomany));
+
+                    return new Versenyzo(vezeteknev, keresztnev, szuletesiIdo);
+                }
+
+            }
+
 
             class Program
             {
