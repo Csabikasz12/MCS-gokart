@@ -182,6 +182,53 @@ namespace MCS_gokart2
                 static void Main(string[] args)
                 {
 
+                    Console.WriteLine("============================================================");
+                    Console.WriteLine(" Projekt neve  : Gokart időpontfoglaló - Egyéni kisprojekt");
+                    Console.WriteLine(" Készítette    : Mészáros Csaba");
+                    Console.WriteLine(" Kezdeti dátum : 2026.09.07");
+                    Console.WriteLine("============================================================");
+                    Console.WriteLine();
+
+
+                    Gokartpalya palya = new Gokartpalya(
+                        "Ampax Gokartpálya",
+                        "1117 Budapest, Budafoki út 183.",
+                        "+36 1 123 4567",
+                        "ampaxgokart.hu"
+
+                        );
+
+                    palya.AdatokKiirasa();
+                    palya.SzabalyokKiirasa();
+
+                    List<string> vezeteknevek = NevGenerator.NevekBeolvasasa("vezeteknevek.txt");
+                    List<string> keresztnevek = NevGenerator.NevekBeolvasasa("keresztnevek.txt");
+
+                    Random rnd = new Random();
+                    int versenyzoSzam = rnd.Next(1, 151);
+
+                    Console.WriteLine($"Generált versenyzők száma: {versenyzoSzam}");
+                    Console.WriteLine("------------------------------------------------------------");
+                    
+                    List<Versenyzo> versenyzok = new List<Versenyzo>();
+
+                    for (int i = 0; i < versenyzoSzam; i++)
+                    {
+                        Versenyzo ujVersenyzo = NevGenerator.VeletlenVersenyzoGeneralasa(vezeteknevek, keresztnevek, rnd);
+                        versenyzok.Add(ujVersenyzo);
+
+                        ujVersenyzo.AdatokKiirasa();
+                        Console.Write("------------------------------------------------------------");
+                    }
+
+                    Console.WriteLine();
+                    Console.WriteLine($"Összesen {versenyzok.Count} versenyző került generálásra.");
+
+                    Console.WriteLine();
+                    Console.WriteLine("Nyomj meg egy billentyűt a kilépéshez...");
+                    Console.ReadKey();
+
+
                 }
             }
         }
