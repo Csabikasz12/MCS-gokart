@@ -142,15 +142,18 @@ namespace MCS_gokart2
                 Environment.Exit(1);
             }
 
-            string[] sorok = File.ReadAllLines(teljesUtvonal);
-            foreach (string sor in sorok)
+            string teljesSzoveg = File.ReadAllText(teljesUtvonal);
+            string[] reszek = teljesSzoveg.Split(',');
+
+            foreach (string resz in reszek)
             {
-                string tisztitottSor = sor.Trim();
-                if (!string.IsNullOrWhiteSpace(tisztitottSor))
+                string tisztitott = resz.Trim().Trim('\'', '"', ' ', '\r', '\n');
+                if (!string.IsNullOrWhiteSpace(tisztitott))
                 {
-                    nevek.Add(tisztitottSor);
+                    nevek.Add(tisztitott);
                 }
             }
+
             return nevek;
         }
 
@@ -337,9 +340,6 @@ namespace MCS_gokart2
             {
                 Versenyzo ujVersenyzo = NevGenerator.VeletlenVersenyzoGeneralasa(vezeteknevek, keresztnevek, rnd);
                 versenyzok.Add(ujVersenyzo);
-
-                ujVersenyzo.AdatokKiirasa();
-                Console.WriteLine("------------------------------------------------------------");
             }
 
             Console.WriteLine();
