@@ -131,7 +131,6 @@ namespace MCS_gokart2
 
     public static class NevGenerator
     {
-
         public static List<string> NevekBeolvasasa(string fajlNev)
         {
             List<string> nevek = new List<string>();
@@ -179,20 +178,13 @@ namespace MCS_gokart2
     } // NevGenerator vége
 
 
-
-    // Egyetlen foglalást reprezentáló osztály
-    // Egy Foglalas = egy versenyző + egy nap + egy 1 órás sáv kezdőórája
-
     public class Foglalas
     {
         public string VersenyzoAzonosito { get; set; }
-        public DateTime Datum { get; set; }   // csak a dátum rész számít
-        public int KezdoOra { get; set; }     // pl. 15 = a 15-16-os sáv
+        public DateTime Datum { get; set; }
+        public int KezdoOra { get; set; }
     }
 
-
-
-    // A teljes időszalagot és a foglalásokat kezelő osztály
 
     public class Naptar
     {
@@ -200,11 +192,10 @@ namespace MCS_gokart2
         private List<int> oraSavok = new List<int> { 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 };
         private List<DateTime> napok = new List<DateTime>();
 
-        private const string ElofoglalasAzonosito = "ELOFOGLALVA";
+        private List<Versenyzo> elofoglaltVersenyzok = new List<Versenyzo>();
 
-        public Naptar()
+        public Naptar(List<string> vezeteknevek, List<string> keresztnevek, Random rnd)
         {
-            // A mai naptól a hónap végéig soroljuk fel a napokat
             DateTime ma = DateTime.Today;
             DateTime honapVege = new DateTime(ma.Year, ma.Month, DateTime.DaysInMonth(ma.Year, ma.Month));
 
@@ -213,25 +204,35 @@ namespace MCS_gokart2
                 napok.Add(nap);
             }
 
-            ElofoglalasokGeneralasa();
+            ElofoglalasokGeneralasa(vezeteknevek, keresztnevek, rnd);
         }
 
-
-        private void ElofoglalasokGeneralasa()
+        private void ElofoglalasokGeneralasa(List<string> vezeteknevek, List<string> keresztnevek, Random rnd)
         {
-            Random rnd = new Random();
-            int elofoglalasokSzama = rnd.Next(10, 26); // kb. 10-25 véletlen előfoglalás
+            int elofoglaltSavokSzama = rnd.Next(5, 15);
 
-            for (int i = 0; i < elofoglalasokSzama; i++)
+            for (int i = 0; i < elofoglaltSavokSzama; i++)
             {
                 DateTime nap = napok[rnd.Next(napok.Count)];
                 int ora = oraSavok[rnd.Next(oraSavok.Count)];
 
-                if (!VanFoglalas(nap, ora))
+                int jelenlegiLetszam = FoglaltLetszam(nap, ora);
+                if (jelenlegiLetszam >= Gokartpalya.MaxVersenyzoLetszam)
                 {
+                    continue;
+                }
+
+                int keztLetszam = rnd.Next(Gokartpalya.MinVersenyzoLetszam, Gokartpalya.MaxVersenyzoLetszam + 1);
+                int hozzaadhato = Math.Min(keztLetszam, Gokartpalya.MaxVersenyzoLetszam - jelenlegiLetszam);
+
+                for (int f = 0; f < hozzaadhato; f++)
+                {
+                    Versenyzo elofoglaltVersenyzo = NevGenerator.VeletlenVersenyzoGeneralasa(vezeteknevek, keresztnevek, rnd);
+                    elofoglaltVersenyzok.Add(elofoglaltVersenyzo);
+
                     foglalasok.Add(new Foglalas
                     {
-                        VersenyzoAzonosito = ElofoglalasAzonosito,
+                        VersenyzoAzonosito = elofoglaltVersenyzo.VersenyzoAzonosito,
                         Datum = nap.Date,
                         KezdoOra = ora
                     });
@@ -244,7 +245,17 @@ namespace MCS_gokart2
             return foglalasok.Exists(f => f.Datum.Date == datum.Date && f.KezdoOra == oraKezdet);
         }
 
-        // Ellenőrzi, hogy egy új foglalás megfelel-e a szabályoknak
+        public int FoglaltLetszam(DateTime datum, int oraKezdet)
+        {
+            return foglalasok.FindAll(f => f.Datum.Date == datum.Date && f.KezdoOra == oraKezdet).Count;
+        }
+
+        // ÚJ: visszaadja egy adott versenyző összes jelenlegi foglalását
+        public List<Foglalas> VersenyzoFoglalasai(string azonosito)
+        {
+            return foglalasok.FindAll(f => f.VersenyzoAzonosito == azonosito);
+        }
+
         public bool UjFoglalasErvenyes(DateTime datum, List<int> oraKezdoLista, out string hibaUzenet)
         {
             hibaUzenet = "";
@@ -280,6 +291,16 @@ namespace MCS_gokart2
                 }
             }
 
+            foreach (int ora in oraKezdoLista)
+            {
+                int jelenlegiLetszam = FoglaltLetszam(datum, ora);
+                if (jelenlegiLetszam >= Gokartpalya.MaxVersenyzoLetszam)
+                {
+                    hibaUzenet = $"A(z) {ora}-{ora + 1} sáv ({datum:yyyy.MM.dd}) már tele van ({Gokartpalya.MaxVersenyzoLetszam} fő).";
+                    return false;
+                }
+            }
+
             return true;
         }
 
@@ -296,17 +317,15 @@ namespace MCS_gokart2
             }
         }
 
-        // Egy adott versenyző összes korábbi foglalását törli (átállításnál kell)
         public void VersenyzoFoglalasainakTorlese(string azonosito)
         {
             foglalasok.RemoveAll(f => f.VersenyzoAzonosito == azonosito);
         }
 
-        // A színes időszalag kiírása a konzolra
         public void IdoszalagKiirasa()
         {
             Console.WriteLine();
-            Console.WriteLine("=== Időszalag (szabad = zöld, foglalt = piros) ===");
+            Console.WriteLine("=== Időszalag (szám = aktuális/maximum létszám a sávban) ===");
 
             Console.Write("Dátum       ");
             foreach (int ora in oraSavok)
@@ -322,15 +341,54 @@ namespace MCS_gokart2
 
                 foreach (int ora in oraSavok)
                 {
-                    bool foglalt = VanFoglalas(nap, ora);
+                    int letszam = FoglaltLetszam(nap, ora);
+                    bool foglalt = letszam > 0;
+
                     Console.BackgroundColor = foglalt ? ConsoleColor.Red : ConsoleColor.Green;
                     Console.ForegroundColor = ConsoleColor.Black;
-                    Console.Write("     ");
+
+                    string cellaSzoveg = $"{letszam}/{Gokartpalya.MaxVersenyzoLetszam}";
+                    Console.Write(cellaSzoveg.PadRight(5));
+
                     Console.ResetColor();
                     Console.Write(" ");
                 }
                 Console.WriteLine();
             }
+            Console.WriteLine();
+        }
+
+        public void FoglaltSavokListazasa()
+        {
+            Console.WriteLine();
+            Console.WriteLine("=== Foglalt időpontok részletesen ===");
+
+            bool voltFoglalas = false;
+
+            foreach (DateTime nap in napok)
+            {
+                foreach (int ora in oraSavok)
+                {
+                    List<Foglalas> ittFoglaltak = foglalasok.FindAll(f => f.Datum.Date == nap.Date && f.KezdoOra == ora);
+
+                    if (ittFoglaltak.Count > 0)
+                    {
+                        voltFoglalas = true;
+                        Console.WriteLine($"{nap:yyyy.MM.dd} {ora}-{ora + 1}: {ittFoglaltak.Count} fő");
+
+                        foreach (Foglalas f in ittFoglaltak)
+                        {
+                            Console.WriteLine($"    - {f.VersenyzoAzonosito}");
+                        }
+                    }
+                }
+            }
+
+            if (!voltFoglalas)
+            {
+                Console.WriteLine("Jelenleg nincs egyetlen foglalás sem.");
+            }
+
             Console.WriteLine();
         }
     } // Naptar vége
@@ -347,7 +405,6 @@ namespace MCS_gokart2
             Console.WriteLine("============================================================");
             Console.WriteLine();
 
-            // --- 1. A gokart helyszín ---
             Gokartpalya palya = new Gokartpalya(
                 "Ampax Gokartpálya",
                 "1117 Budapest, Budafoki út 183.",
@@ -358,7 +415,6 @@ namespace MCS_gokart2
             palya.AdatokKiirasa();
             palya.SzabalyokKiirasa();
 
-            // --- 2. Versenyzők generálása ---
             List<string> vezeteknevek = NevGenerator.NevekBeolvasasa("vezeteknevek.txt");
             List<string> keresztnevek = NevGenerator.NevekBeolvasasa("keresztnevek.txt");
 
@@ -379,11 +435,9 @@ namespace MCS_gokart2
             Console.WriteLine();
             Console.WriteLine($"Összesen {versenyzok.Count} versenyző került generálásra.");
 
-            // --- 4. Időszalag létrehozása és megjelenítése ---
-            Naptar naptar = new Naptar();
+            Naptar naptar = new Naptar(vezeteknevek, keresztnevek, rnd);
             naptar.IdoszalagKiirasa();
 
-            // --- 5. Menürendszer: foglalás beállítása / átállítása ---
             bool kilepes = false;
             while (!kilepes)
             {
@@ -391,6 +445,7 @@ namespace MCS_gokart2
                 Console.WriteLine("1 - Versenyzők listázása");
                 Console.WriteLine("2 - Foglalás beállítása / átállítása versenyzőhöz");
                 Console.WriteLine("3 - Időszalag újra megjelenítése");
+                Console.WriteLine("4 - Foglalt időpontok részletes listázása (kik foglaltak)");
                 Console.WriteLine("0 - Kilépés");
                 Console.Write("Választás: ");
                 string valasztas = Console.ReadLine();
@@ -409,6 +464,10 @@ namespace MCS_gokart2
                         naptar.IdoszalagKiirasa();
                         break;
 
+                    case "4":
+                        naptar.FoglaltSavokListazasa();
+                        break;
+
                     case "0":
                         kilepes = true;
                         break;
@@ -423,7 +482,6 @@ namespace MCS_gokart2
             Console.ReadKey();
         }
 
-        // A generált versenyzők rövid listázása (azonosító + név)
         static void VersenyzokListazasa(List<Versenyzo> versenyzok)
         {
             Console.WriteLine();
@@ -435,7 +493,6 @@ namespace MCS_gokart2
             Console.WriteLine();
         }
 
-        // Egy versenyző kiválasztása azonosító alapján
         static Versenyzo VersenyzoKivalasztasa(List<Versenyzo> versenyzok)
         {
             VersenyzokListazasa(versenyzok);
@@ -452,13 +509,40 @@ namespace MCS_gokart2
             return talalt;
         }
 
-        // Foglalás beállítása vagy átállítása egy kiválasztott versenyzőnek
+        // Foglalás beállítása vagy átállítása: most már megmutatja a meglévő foglalásokat,
+        // és rákérdez, hogy tényleg módosítani szeretnéd-e, mielőtt bármit bekérne
         static void FoglalasKezeles(List<Versenyzo> versenyzok, Naptar naptar)
         {
             Versenyzo kivalasztott = VersenyzoKivalasztasa(versenyzok);
             if (kivalasztott == null)
             {
                 return;
+            }
+
+            List<Foglalas> meglevoFoglalasok = naptar.VersenyzoFoglalasai(kivalasztott.VersenyzoAzonosito);
+
+            if (meglevoFoglalasok.Count > 0)
+            {
+                Console.WriteLine();
+                Console.WriteLine($"A(z) {kivalasztott.VersenyzoAzonosito} azonosítónak jelenleg van foglalása:");
+                foreach (Foglalas f in meglevoFoglalasok)
+                {
+                    Console.WriteLine($"    - {f.Datum:yyyy.MM.dd} {f.KezdoOra}-{f.KezdoOra + 1}");
+                }
+
+                Console.Write("Szeretnéd módosítani ezt a foglalást? (i/n): ");
+                string valasz = Console.ReadLine();
+
+                if (valasz == null || valasz.Trim().ToLower() != "i")
+                {
+                    Console.WriteLine("A foglalás nem változott.");
+                    return;
+                }
+            }
+            else
+            {
+                Console.WriteLine();
+                Console.WriteLine($"A(z) {kivalasztott.VersenyzoAzonosito} azonosítónak jelenleg nincs foglalása.");
             }
 
             Console.Write("Add meg a dátumot (éééé.hh.nn formátumban, pl. 2026.09.26): ");
@@ -478,17 +562,33 @@ namespace MCS_gokart2
                 return;
             }
 
-            Console.Write("Add meg a kezdő órá(ka)t vesszővel elválasztva (pl. 15 vagy 15,16): ");
-            string oraSzoveg = Console.ReadLine();
+            Console.Write("Add meg a kezdő órát (8 és 18 között, pl. 8): ");
+            string kezdoOraSzoveg = Console.ReadLine();
 
-            List<int> oraKezdoLista = new List<int>();
-            foreach (string reszSzoveg in oraSzoveg.Split(','))
+            int kezdoOra;
+            if (!int.TryParse(kezdoOraSzoveg.Trim(), out kezdoOra))
             {
-                if (int.TryParse(reszSzoveg.Trim(), out int oraErtek))
-                {
-                    oraKezdoLista.Add(oraErtek);
-                }
+                Console.WriteLine("Érvénytelen óra.");
+                return;
             }
+
+            Console.Write("Hány órára szól a foglalás (1 vagy 2): ");
+            string idotartamSzoveg = Console.ReadLine();
+
+            int idotartam;
+            if (!int.TryParse(idotartamSzoveg.Trim(), out idotartam) || (idotartam != 1 && idotartam != 2))
+            {
+                Console.WriteLine("Érvénytelen időtartam, csak 1 vagy 2 lehet.");
+                return;
+            }
+
+            List<int> oraKezdoLista = new List<int> { kezdoOra };
+            if (idotartam == 2)
+            {
+                oraKezdoLista.Add(kezdoOra + 1);
+            }
+
+            naptar.VersenyzoFoglalasainakTorlese(kivalasztott.VersenyzoAzonosito);
 
             string hibaUzenet;
             if (!naptar.UjFoglalasErvenyes(datum, oraKezdoLista, out hibaUzenet))
@@ -497,8 +597,6 @@ namespace MCS_gokart2
                 return;
             }
 
-            // Ha a versenyzőnek már volt korábbi foglalása, azt előbb töröljük (ez az "átállítás")
-            naptar.VersenyzoFoglalasainakTorlese(kivalasztott.VersenyzoAzonosito);
             naptar.FoglalasHozzaadasa(kivalasztott.VersenyzoAzonosito, datum, oraKezdoLista);
 
             Console.WriteLine("Foglalás sikeresen beállítva / átállítva.");
