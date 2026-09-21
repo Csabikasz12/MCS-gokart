@@ -1,9 +1,9 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\meszaroscsaba\\Documents\\Github2\\MCS-gokart\\",
+  "WorkspaceRootPath": "C:\\Users\\jrmes\\Documents\\GitHub\\MCS-gokart\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\meszaroscsaba\\Documents\\Github2\\MCS-gokart\\MCS-gokart2\\Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jrmes\\Documents\\GitHub\\MCS-gokart\\MCS-gokart2\\Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:MCS-gokart2\\Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -20,11 +20,15 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\meszaroscsaba\\Documents\\Github2\\MCS-gokart\\MCS-gokart2\\Program.cs",
+              "DocumentMoniker": "C:\\Users\\jrmes\\Documents\\GitHub\\MCS-gokart\\MCS-gokart2\\Program.cs",
               "RelativeDocumentMoniker": "MCS-gokart2\\Program.cs",
-              "ToolTip": "C:\\Users\\meszaroscsaba\\Documents\\Github2\\MCS-gokart\\MCS-gokart2\\Program.cs",
+              "ToolTip": "C:\\Users\\jrmes\\Documents\\GitHub\\MCS-gokart\\MCS-gokart2\\Program.cs",
               "RelativeToolTip": "MCS-gokart2\\Program.cs",
+<<<<<<< HEAD
               "ViewState": "AgIAAC4BAAAAAAAAAAAAAEUBAAA0AAAAAAAAAA==",
+=======
+              "ViewState": "AgIAAHgAAAAAAAAAAAAAAI8AAAAAAAAAAAAAAA==",
+>>>>>>> ba61af3d2a39d02616fc2ed6e7a990b9ef5e18d3
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-09-14T08:33:54.269Z",
               "EditorCaption": ""

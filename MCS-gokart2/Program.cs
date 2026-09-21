@@ -155,12 +155,15 @@ namespace MCS_gokart2
                 }
             }
 
+<<<<<<< HEAD
             if (nevek.Count == 0)
             {
                 Console.WriteLine($"HIBA: A(z) '{fajlNev}' fájlból nem sikerült egyetlen nevet sem beolvasni!");
                 Environment.Exit(1);
             }
 
+=======
+>>>>>>> ba61af3d2a39d02616fc2ed6e7a990b9ef5e18d3
             return nevek;
         }
 
@@ -179,10 +182,17 @@ namespace MCS_gokart2
     } // NevGenerator vége
 
 
+<<<<<<< HEAD
     
     // Egyetlen foglalást reprezentáló osztály
     // Egy Foglalas = egy versenyző + egy nap + egy 1 órás sáv kezdőórája
     
+=======
+    // ================================================================
+    // ÚJ: egyetlen foglalást reprezentáló osztály
+    // Egy Foglalas = egy versenyző + egy nap + egy 1 órás sáv kezdőórája
+    // ================================================================
+>>>>>>> ba61af3d2a39d02616fc2ed6e7a990b9ef5e18d3
     public class Foglalas
     {
         public string VersenyzoAzonosito { get; set; }
@@ -191,17 +201,26 @@ namespace MCS_gokart2
     }
 
 
+<<<<<<< HEAD
     
     // A teljes időszalagot és a foglalásokat kezelő osztály
     
+=======
+    // ================================================================
+    // ÚJ: a teljes időszalagot és a foglalásokat kezelő osztály
+    // ================================================================
+>>>>>>> ba61af3d2a39d02616fc2ed6e7a990b9ef5e18d3
     public class Naptar
     {
         private List<Foglalas> foglalasok = new List<Foglalas>();
         private List<int> oraSavok = new List<int> { 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 };
         private List<DateTime> napok = new List<DateTime>();
 
+<<<<<<< HEAD
         private const string ElofoglalasAzonosito = "ELOFOGLALVA";
 
+=======
+>>>>>>> ba61af3d2a39d02616fc2ed6e7a990b9ef5e18d3
         public Naptar()
         {
             // A mai naptól a hónap végéig soroljuk fel a napokat
@@ -212,6 +231,7 @@ namespace MCS_gokart2
             {
                 napok.Add(nap);
             }
+<<<<<<< HEAD
 
             ElofoglalasokGeneralasa();
         }
@@ -237,6 +257,8 @@ namespace MCS_gokart2
                     });
                 }
             }
+=======
+>>>>>>> ba61af3d2a39d02616fc2ed6e7a990b9ef5e18d3
         }
 
         public bool VanFoglalas(DateTime datum, int oraKezdet)
@@ -430,7 +452,11 @@ namespace MCS_gokart2
             Console.WriteLine("=== Versenyzők listája ===");
             foreach (Versenyzo v in versenyzok)
             {
+<<<<<<< HEAD
                 Console.WriteLine($"{v.VersenyzoAzonosito.PadRight(30)} | {v.Vezeteknev} {v.Keresztnev}");
+=======
+                Console.WriteLine($"{v.VersenyzoAzonosito}  |  {v.Vezeteknev} {v.Keresztnev}");
+>>>>>>> ba61af3d2a39d02616fc2ed6e7a990b9ef5e18d3
             }
             Console.WriteLine();
         }
